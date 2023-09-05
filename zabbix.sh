@@ -11,7 +11,7 @@ dbzabbix="45@vnTdsu1"
 monzabbix="45@vnTdsu1"
 
 # Zabbix Server URL
-zabbixurl="https://cdn.zabbix.com/zabbix/sources/stable/6.0/zabbix-6.0.0.tar.gz"
+zabbixurl="https://cdn.zabbix.com/zabbix/sources/stable/6.2/zabbix-6.2.3.tar.gz"
 
 # Just Zabbix server archive name
 zabbixarchive=$(basename "$zabbixurl")
@@ -52,7 +52,7 @@ mkdir -p "$tmpdir" >> $logfile 2>&1
 if [ ! -f /etc/systemd/system/zabbix-server.service  ]; then
 	log "Installing MySQL..."
 	sudo -E apt-get -y update >> $logfile 2>&1
-	sudo -E apt-get -y install mysql-server mysql-client snmp libsnmp-dev libcurl4-openssl-dev libevent-dev libpcre3-dev libxml2-dev libmariadb-dev libopenipmi-dev pkg-config libssh2-1-dev libldap-dev >> $logfile 2>&1
+	sudo -E apt-get -y install mysql-server mysql-client >> $logfile 2>&1
 	# Secure MySQL, create zabbix DB, zabbix user and zbx_monitor user.
 	sudo -E mysql --user=root <<_EOF_
 SET GLOBAL log_bin_trust_function_creators = 1;
@@ -152,10 +152,7 @@ _EOF_
 
 	# Install webserver
 	log "Installing Apache"
- 	sudo -E apt-get -y install software-properties-common -y
-	sudo -E add-apt-repository ppa:ondrej/php --yes &> /dev/null
-	sudo -E apt update
-	sudo -E apt-get -y install build-essential libxml2-dev php7.4 php7.4-gd php7.4-xml php7.4-bcmath php7.4-mbstring libapache2-mod-php7.4 php7.4-ldap php7.4-mysql fping apache2 mlocate >> $logfile 2>&1
+ 	sudo -E apt-get -y install fping apache2 php libapache2-mod-php php-cli php-mysql php-mbstring php-gd php-xml php-bcmath php-ldap mlocate >> $logfile 2>&1
 	sudo -E updatedb >> $logfile 2>&1
  # Get php.ini file location
 	phpini=$(locate php.ini 2>&1 | head -n 1)
