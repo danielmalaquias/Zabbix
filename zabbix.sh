@@ -151,17 +151,9 @@ SET GLOBAL log_bin_trust_function_creators = 0;
 _EOF_
 
 	# Install webserver
-	log "Installing Apache and PHP..."
-	sudo -E apt-get -y install fping apache2 php libapache2-mod-php php-cli php-mysql php-mbstring php-gd php-xml php-bcmath php-ldap mlocate >> $logfile 2>&1
+	log "Installing Apache"
+	sudo -E apt-get -y install fping apache2 zabbix-frontend-php mlocate >> $logfile 2>&1
 	sudo -E updatedb >> $logfile 2>&1
-	# Get php.ini file location
-	phpini=$(locate php.ini 2>&1 | head -n 1)
-	# Update settings in php.ini
-	sudo -E sed -i 's/max_execution_time = 30/max_execution_time = 300/g' "$phpini" >> $logfile 2>&1
-	sudo -E sed -i 's/memory_limit = 128M/memory_limit = 256M/g' "$phpini" >> $logfile 2>&1
-	sudo -E sed -i 's/post_max_size = 8M/post_max_size = 32M/g' "$phpini" >> $logfile 2>&1
-	sudo -E sed -i 's/max_input_time = 60/max_input_time = 300/g' "$phpini" >> $logfile 2>&1
-	sudo -E sed -i "s|;date.timezone =|date.timezone = $phptz|g" "$phpini" >> $logfile 2>&1
 	sudo -E service apache2 restart >> $logfile 2>&1
 
 	# Use latest golang
